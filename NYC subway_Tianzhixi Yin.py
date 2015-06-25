@@ -65,7 +65,15 @@ intercept = results.params[0]
 params = results.params[1:]
 predictions = intercept + np.dot(features, params)
 
-(values - predictions).hist(bins=500)
+fig = (values - predictions).hist(bins=100)
+fig.set_title('Histogram of the residuals')
+
+scipy.stats.probplot(values - predictions,  plot=plt)
+
+plt.plot(values - predictions)
+plt.title('Residuals per data point')
+plt.xlabel('Data')
+plt.ylabel('Residuals')
 
 results.params
 results.tvalues
@@ -75,3 +83,10 @@ subset = subway[subway['UNIT'].isin(Stations)][['hour', 'UNIT', 'ENTRIESn_hourly
 subset_hourly = subset.groupby(['hour', 'UNIT']).sum()
 pd.DataFrame(subset_hourly).reset_index(inplace=True)
 ggplot(subset_hourly, aes('hour', 'ENTRIESn_hourly', color='UNIT'))+geom_point()+geom_line()+xlim(0,20)+ylim(0,)+ggtitle('Ridership by time-of-day of UNITS R003 to R022')+xlab('Time-of-day')+ylab('ENTRIESn_hourly')
+
+
+
+subset = subway[['hour', 'ENTRIESn_hourly']]
+subset_hourly = subset.groupby(['hour']).sum()
+pd.DataFrame(subset_hourly).reset_index(inplace=True)
+ggplot(subset_hourly, aes('hour', 'ENTRIESn_hourly'))+geom_point()+geom_line()+xlim(0,20)+ylim(0,)+ggtitle('Ridership by time-of-day')+xlab('Time-of-day')+ylab('ENTRIESn_hourly')
